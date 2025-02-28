@@ -31,6 +31,7 @@ class App{
 		vector<SplashScreenTex> SST;
 		State state;
 
+		// Start Global Section
 		bool Init(){
 			if(SDL_Init(SDL_INIT_VIDEO) < 0){
 				cerr << "Gagal Inisialisasi SDL: " << SDL_GetError() << endl;
@@ -59,7 +60,7 @@ class App{
 				cerr << "Gagal Memuat Font: " << TTF_GetError() << endl;
 				return false;
 			}
-			loadTextures();
+			SSTLoadTextures();
 			return true;
 		}
 
@@ -103,7 +104,9 @@ class App{
 			SDL_FreeSurface(surface);
 			return texture;
 		}
+		// End GLobal Section
 
+		// Start Splash Screen Section
 		void fillStructSST(const char* data, int mode, int x, int y, const string& hexCode = "#FFFFFF"){ // data bisa berupa path atau text, mode 0 untuk img, mode 1 untuk ttf
 			SplashScreenTex tex;
 			if(mode == 0){
@@ -114,18 +117,15 @@ class App{
 			}
 			
 			SDL_QueryTexture(tex.normal, nullptr, nullptr, &tex.rect.w, &tex.rect.h);
+			// SDL_Log("%s (W, H)\t: (%d, %d)", data, tex.rect.w, tex.rect.h);
 			tex.rect.x = x;
 			tex.rect.y = y;
 			SST.push_back(tex);
 		}
 
-		void loadTextures(){
-			SDL_DisplayMode displayMode;
+		void SSTLoadTextures(){
 			fillStructSST("res/assets/splash_screen/splash_screen.png", 0, 0, 0);
-			fillStructSST("Loading", 1, (W * 0.5), (H * 0.75));
-			fillStructSST(" .", 1, (SST[1].rect.x + SST[1].rect.w), (H * 0.75) - (SST[1].rect.h / 2));
-			fillStructSST(" .", 1, (SST[2].rect.x + SST[2].rect.w), (H * 0.75) - (SST[1].rect.h / 2));
-			fillStructSST(" .", 1, (SST[3].rect.x + SST[3].rect.w), (H * 0.75) - (SST[1].rect.h / 2));
+			fillStructSST("Loading", 1, (W * 0.42), (H * 0.75));
 		}
 
 		void SplashScreenUpdate(){
@@ -137,7 +137,7 @@ class App{
 			}
 		}
 
-		void eventHandle(){
+		void SSEventHandle(){
 			while(SDL_PollEvent(&event)){
 				if(event.type == SDL_QUIT){
 					state = CLOSE;
@@ -148,10 +148,14 @@ class App{
 		void SplashScreen(){
 			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 			SDL_RenderClear(renderer);
-			eventHandle();
+			SSEventHandle();
 			SplashScreenUpdate();
 		}
+		// End Splash Screen Section
 
+		// Start Home Section
+
+		
 		public:
 			App() : window(nullptr), renderer(nullptr), font(nullptr), state(SPLASHSCREEN){}
 
